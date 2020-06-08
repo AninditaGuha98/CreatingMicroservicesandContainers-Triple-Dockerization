@@ -51,19 +51,27 @@
     <div class="Main">
         <div class="Login">
             <h1>Login Form</h1>
-            <ul class="Ul">
+            <form action="" method="post">
+                <ul class="Ul">
             <li>
                 <label class="label">Email</label>
-                <input type="email" placeholder="email"  class="input" required>
+                <input type="email" placeholder="email"  class="input" name="email" value="{{request.form.email }}" required>
             </li>
             <li>
                 <label class="label">Password</label>
-                <input type="password" placeholder="password" class="input" required>
+                <input type="password" placeholder="password" class="input" name="password" value="{{request.form.password }}" required>
             </li>
+                </ul>
 
             <div class="login">
                 <button type="submit" id="login">Login</button>
             </div>
+
+            </form>
+            <div>
+                <p class="status">{{status}}</p>
+            </div>
+
 
         <div>
     </div>

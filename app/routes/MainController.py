@@ -18,8 +18,11 @@ def registrationPage():
             lastname = request.form.get('lastname')
             email = request.form.get('email')
             password = request.form.get('password')
-            DBConnector.SQLenterDetails(firstname, lastname, email, password)
-            return render_template('registration.html', status="Registration successful")
+            flag=DBConnector.SQLenterDetails(firstname, lastname, email, password)
+            if flag:
+                return render_template('registration.html', status="Registration successful")
+            else:
+                return render_template('registration.html',status="User already registered.")
     return render_template('registration.html')
 
 
@@ -31,7 +34,6 @@ def loginPage():
         password = request.form.get('password')
         # find the username of email id
         flag = DBConnector.CheckLoginCredentials(email, password)
-        print(flag)
         if flag != "no":
             list=DBConnector.InsertintoUserState(email)
             return render_template('loginstatus.html', user=flag,list=list)
@@ -43,7 +45,11 @@ def loginPage():
 @app.route('/loginstatus',methods=['GET','POST'])
 def loginstatus():
     if request.method=='POST':
-        DBConnector.logoutUser(request.form.get('username'))
+        flag=DBConnector.logoutUser(request.form.get('username'))
+        if flag:
+            return render_template('loginstatus.html',status="You have successfully logged out.")
+        else:
+            return render_template('loginstatus.html', status="Could not log out.")
         return render_template('loginstatus.html')
 
 

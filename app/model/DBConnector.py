@@ -1,29 +1,37 @@
 import mysql.connector
 import datetime
 
+from app.model import passencryptdecrypt
 
-
-conn = mysql.connector.connect(host='database-2.ccmdqmbvy12j.us-east-1.rds.amazonaws.com'
-                                   ,user='admin',
+conn = mysql.connector.connect(host='34.86.198.25'
+                                   ,user='root',
                                    password='serverless',
                                    db='serverless')
 cursor = conn.cursor(buffered=True)
 
 def SQLenterDetails(firstname,lastname,email,password):
-    insertUser= "INSERT into userData(firstname,lastname,email,password) values(%s,%s,%s,%s)"
-    cursor.execute(insertUser,(firstname,lastname,email,password))
-    conn.commit()
+    encryptedpass=passencryptdecrypt.passwordEncrypt(password)
+    try:
+        insertUser= "INSERT into userData(firstname,lastname,email,password) values(%s,%s,%s,%s)"
+        cursor.execute(insertUser,(firstname,lastname,email,encryptedpass))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 
 
 def CheckLoginCredentials(email,password):
-    findUser="Select firstname,lastname,password from userData where email=%s"
-    cursor.execute(findUser,(email,))
-    results=cursor.fetchone()
-    if results[2]==password:
-        username=results[0]+' '+results[1]
+    try:
+        findUser="Select firstname,lastname,password from userData where email=%s"
+        cursor.execute(findUser,(email,))
+        results=cursor.fetchone()
+        decryptpass=passencryptdecrypt.passwordDecrypt(results[2])
+        if decryptpass==password:
+            username=results[0]+' '+results[1]
         return username
-    else:
+    except:
         return "no"
 
 def InsertintoUserState(email):
@@ -51,12 +59,22 @@ def InsertintoUserState(email):
     return userlist
 
 def logoutUser(username):
-    split_data=username.split()
-    logoutid="select userId from userData where firstname=%s and lastname=%s"
-    cursor.execute(logoutid,(split_data[1],split_data[2]))
-    conn.commit()
-    userid=cursor.fetchone()
-    print(userid)
+    try:
+        status="offline"
+        split_data=username.split()
+        logoutid="select userId from userData where firstname=%s and lastname=%s"
+        cursor.execute(logoutid,(split_data[1],split_data[2]))
+        conn.commit()
+        userid=cursor.fetchone()
+        logQuery="update userState set status=%s, offlineTime=%s where userId=%s"
+        cursor.execute(logQuery, (status, datetime.datetime.utcnow(), userid[0]))
+        conn.commit()
+        return True
+    except:
+        return False
+
+
+
 
 
 

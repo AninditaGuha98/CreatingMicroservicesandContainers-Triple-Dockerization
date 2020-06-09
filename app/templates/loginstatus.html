@@ -54,9 +54,13 @@
         border: hidden;
         width: 100%;
         font-style: italic;
+        text-align: center;
     }
     input{
         pointer-events: none;
+    }
+    .tagP{
+        width: 400px;
     }
 </style>
 </head>
@@ -69,7 +73,7 @@
         <form action="/loginstatus" method="post">
             <input id="uppertag" type="text" name= "username" value="Hello {{user}} , you are logged in.">
             <hr>
-            <p>Here are other users who are logged in</p><br/>
+            <p class="tagP">Here are other users who are logged in</p><br/>
             <div class="users">
                 <ul class="usersUL">
                     {% for users in list %}
@@ -79,6 +83,9 @@
             </div>
             <div>
                 <button type="submit" id="logout">Wanna Logout?</button>
+            </div>
+            <div>
+                <p class="status">{{status}}</p>
             </div>
         </form>
     </div>

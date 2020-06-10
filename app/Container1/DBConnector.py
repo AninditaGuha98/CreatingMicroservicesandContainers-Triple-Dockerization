@@ -1,7 +1,7 @@
 import mysql.connector
 import datetime
 
-from app.model import passencryptdecrypt
+from app.Container1 import passencryptdecrypt
 
 conn = mysql.connector.connect(host='34.86.198.25'
                                    ,user='root',
@@ -10,7 +10,7 @@ conn = mysql.connector.connect(host='34.86.198.25'
 cursor = conn.cursor(buffered=True)
 
 def SQLenterDetails(firstname,lastname,email,password):
-    encryptedpass=passencryptdecrypt.passwordEncrypt(password)
+    encryptedpass= passencryptdecrypt.passwordEncrypt(password)
     try:
         insertUser= "INSERT into userData(firstname,lastname,email,password) values(%s,%s,%s,%s)"
         cursor.execute(insertUser,(firstname,lastname,email,encryptedpass))
@@ -27,7 +27,7 @@ def CheckLoginCredentials(email,password):
         findUser="Select firstname,lastname,password from userData where email=%s"
         cursor.execute(findUser,(email,))
         results=cursor.fetchone()
-        decryptpass=passencryptdecrypt.passwordDecrypt(results[2])
+        decryptpass= passencryptdecrypt.passwordDecrypt(results[2])
         if decryptpass==password:
             username=results[0]+' '+results[1]
         return username

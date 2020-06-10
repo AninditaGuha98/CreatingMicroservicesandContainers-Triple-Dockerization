@@ -1,12 +1,11 @@
 from flask import Flask, request
 from flask import render_template
-from app.model import DBConnector
+from app.Container1 import DBConnector
+
+app = Flask(__name__)
 
 
-app = Flask(__name__, template_folder='../templates')
-
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def loginPage():
     # Check login credentials
     if request.method == 'POST':
@@ -15,7 +14,7 @@ def loginPage():
         # find the username of email id
         flag = DBConnector.CheckLoginCredentials(email, password)
         if flag != "no":
-            list=DBConnector.InsertintoUserState(email)
+            list= DBConnector.InsertintoUserState(email)
             return render_template('loginstatus.html', user=flag,list=list)
         else:
             return render_template('login.html', status="Invalid Credentials")
@@ -24,4 +23,4 @@ def loginPage():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0",port=5001)

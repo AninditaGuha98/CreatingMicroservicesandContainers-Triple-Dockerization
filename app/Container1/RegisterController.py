@@ -1,9 +1,9 @@
 from flask import Flask, request
 from flask import render_template
-from app.model import DBConnector
+from app.Container1 import DBConnector
 
+app = Flask(__name__)
 
-app = Flask(__name__, template_folder='../templates')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -17,7 +17,7 @@ def registrationPage():
             lastname = request.form.get('lastname')
             email = request.form.get('email')
             password = request.form.get('password')
-            flag=DBConnector.SQLenterDetails(firstname, lastname, email, password)
+            flag= DBConnector.SQLenterDetails(firstname, lastname, email, password)
             if flag:
                 return render_template('registration.html', status="Registration successful")
             else:
@@ -29,4 +29,4 @@ def registrationPage():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0",port=5000)
